@@ -7,10 +7,10 @@ public class OI {
     private Joystick left = new Joystick(1);
 
     public double getRightY() {
-        return -right.getY()*right.getY();
+        return right.getY()*right.getY();
     }
 
     public double getLeftY() {
-        return -left.getY()*left.getY();
+        return left.getY()*left.getY();
     }
 }

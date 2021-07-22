@@ -31,17 +31,6 @@ public class Robot extends TimedRobot {
      * initialization code.
      */
 
-    private SpeedControllerGroup leftSCG;
-    private SpeedControllerGroup rightSCG;
-
-    private TankDrivetrain driveTrain;
-    private DriveTank driveTank;
-
-    private OI oi;
-
-    private Encoder leftEncoder;
-    private Encoder rightEncoder;
-
     private RootNamespace n;
 
     @Override
@@ -49,20 +38,21 @@ public class Robot extends TimedRobot {
 
         n = new RootNamespace("Robot");
 
-        this.leftEncoder = new Encoder(0, 1);
-        this.rightEncoder = new Encoder(2, 3);
+        OI oi = new OI();
 
-        n.putNumber("Left encoder", this.leftEncoder.get());
-        n.putNumber("Right encoder", this.rightEncoder.get());
+        Encoder leftEncoder = new Encoder(0, 1);
+        Encoder rightEncoder = new Encoder(2, 3);
 
-        this.leftSCG = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.LEFT_TALON), new VictorSP(RobotMap.PWM.LEFT_VICTOR));
-        this.rightSCG = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.RIGHT_TALON), new VictorSP(RobotMap.PWM.RIGHT_VICTOR));
-        this.leftSCG.setInverted(true);
+        n.putNumber("Left encoder", leftEncoder::get);
+        n.putNumber("Right encoder", rightEncoder::get);
 
-        this.driveTrain = new TankDrivetrain(this.leftSCG, this.rightSCG);
-        this.driveTank = new DriveTank(driveTrain, oi::getLeftY, oi::getRightY);
+        SpeedControllerGroup leftSCG = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.LEFT_TALON), new VictorSP(RobotMap.PWM.LEFT_VICTOR));
+        SpeedControllerGroup rightSCG = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.RIGHT_TALON), new VictorSP(RobotMap.PWM.RIGHT_VICTOR));
 
-        driveTrain.setDefaultCommand(this.driveTank);
+        TankDrivetrain driveTrain = new TankDrivetrain(leftSCG, rightSCG);
+        DriveTank driveTank = new DriveTank(driveTrain, oi::getLeftY, oi::getRightY);
+
+        driveTrain.setDefaultCommand(driveTank);
     }
 
     /**
